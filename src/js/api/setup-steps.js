@@ -36,7 +36,7 @@ function setPlaylistAttributes(model, playlist, feedData) {
     attributes.feedData = feedData;
 }
 
-function loadProvider(_model) {
+export function loadProvider(_model) {
     return loadPlaylist(_model).then(() => {
         if (destroyed(_model)) {
             return;
@@ -83,7 +83,7 @@ function isSkinLoaded(skinPath) {
     return false;
 }
 
-function loadSkin(_model) {
+export function loadSkin(_model) {
     const skinUrl = _model.get('skin') ? _model.get('skin').url : undefined;
     if (typeof skinUrl === 'string' && !isSkinLoaded(skinUrl)) {
         const isStylesheet = true;
@@ -95,7 +95,7 @@ function loadSkin(_model) {
     return Promise.resolve();
 }
 
-function loadTranslations(_model) {
+export function loadTranslations(_model) {
     const language = getLanguage();
     if (language && isTranslationAvailable(language)) {
         return new Promise((resolve, reject) => {
@@ -114,19 +114,10 @@ function loadTranslations(_model) {
     return Promise.resolve();
 }
 
+export function loadModules(/* model, api */) {
+    return Promise.resolve();
+}
+
 function destroyed(_model) {
     return _model.attributes._destroyed;
 }
-
-const startSetup = function(model, api, promises) {
-    if (destroyed(model)) {
-        return Promise.reject();
-    }
-    return Promise.all(promises.concat([
-        loadProvider(model),
-        loadSkin(model),
-        loadTranslations(model)
-    ]));
-};
-
-export default startSetup;
